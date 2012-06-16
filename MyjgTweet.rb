@@ -19,21 +19,35 @@
 #  
 # 
 
+# librerias requeridas para el correcto funcionamiento del programa
 require 'oauth'
 require 'twitter'
 
 class MyjgTweet
 
+	# Inicializa variables para uso del programa, como la llave a usar
+	# y la llave secreta, y una variable para definir la cuenta a la 
+	# que se ingreso
+	
 	def initialize()
 		@consumer_key = "vQKk4GpAKdYaXA5lCcTY6g"
 		@consumer_secret = "74zyUeAEFsbVOBQCmJOGWNgHUh6vOMSBQE8mibrFxA"
 		$client
 	end
 	
+	# Funcion que realiza la peticion de datos y solicita los permisos 
+	# de la cuenta del usuario 
+	
 	def login()
-		consumer=OAuth::Consumer.new(
-			@consumer_key,
-			@consumer_secret,
+	
+		# Codigo que realiza la conexion con la api de Twitter que posee
+		# las llaves de acceso al programa, asi como el sitio al que se 
+		# dirigira, junto con las direcciones a las que solicitara datos
+		# para la autenticacion
+		
+		solConexion=OAuth::Consumer.new(
+			@consumer_key, 
+			@consumer_secret, 
 			{
 				:site=>"http://twitter.com",
 				:request_token_url=>"https://api.twitter.com/oauth/request_token",
@@ -41,16 +55,29 @@ class MyjgTweet
 				:authorize_url    =>"https://api.twitter.com/oauth/authorize"
 			}
 		)
-		request_token = consumer.get_request_token
-		tokenx = request_token.token
-		secretx = request_token.secret
-		dir = consumer.authorize_url + "?oauth_token=" + tokenx
-		puts "Place \"#{dir}\" in your browser"
-		print "Enter the number they give you: "
+		
+		# Codigo donde se solicita el token de acceso secreto y la 
+		# direccion para confirmar los datos de la cuenta, o si el 
+		# usuario posee una cuenta de Twitter
+		request_token = solConexion.get_request_token
+		key2 = request_token.token
+		secret2 = request_token.secret
+		dir = solConexion.authorize_url + "?oauth_token=" + tokenx
+		puts "Por favor ingrese al siguiente enlace. Para accesar de 
+			  forma directa al enlace mantén presionado la tecla Ctrl 
+			  y dale un click al enlace"
+		puts "Enlace: \"#{dir}\""
+		print "Por favor ingrese el PIN que la pagina de Twitter genero
+			  para completar el proceso de autorizacion: "
 		pin = STDIN.readline.chomp
 		
+		# Seccion del codigo donde se valida el PIN y los datos 
+		# ingresados por el usuario. Luego de verificar los datos, 
+		# configura la variable Twitter con los datos de acceso del
+		# usuario y crea una nueva instancia de la cuenta
+		
 		begin
-			OAuth::RequestToken.new(consumer, tokenx, secretx)
+			OAuth::RequestToken.new(solConexion, key2, secret2)
 			access_token=request_token.get_access_token(:oauth_verifier => pin)
 			Twitter.configure do |config|
 				config.consumer_key = @consumer_key
@@ -60,18 +87,25 @@ class MyjgTweet
 			end
 			$client = Twitter::Client.new
 			$client.verify_credentials
-			puts "Autenticado Correctamente"
+			puts "Usuario autenticado correctamente"
 
 		rescue Twitter::Unauthorized
 			puts "Error de Autorizacion"
 		end
 	end
 	
+	# envía una actualización de estado de Twitter
+	
 	def twitt()
-		$client.update ("la salida a la biblioteca de twitter_oauth ") # envía una actualización de estado de Twitter
+		$client.update ("la salida a la biblioteca de twitter y oauth ")
 	end
 	
 end
+
+# __FILE__  es la variable que contiene el nombre del archivo que se 
+# está ejecutando en el momento
+# $0 es el nombre del archivo usado para iniciar el programa
+# Los demas datos son para llamar los metodos de la clase
 
 if __FILE__ == $0
 	x = MyjgTweet.new
