@@ -62,14 +62,18 @@ class MyjgTweet
 		request_token = solConexion.get_request_token
 		key2 = request_token.token
 		secret2 = request_token.secret
-		dir = solConexion.authorize_url + "?oauth_token=" + tokenx
-		puts "Por favor ingrese al siguiente enlace. Para accesar de 
-			  forma directa al enlace mantén presionado la tecla Ctrl 
-			  y dale un click al enlace"
+		dir = solConexion.authorize_url + "?oauth_token=" + key2
+		puts "   "
+		puts ("Por favor ingrese al siguiente enlace. Para accesar de 
+forma directa manten presionado la tecla Ctrl y dale un 
+click al enlace")
+		puts "   "
 		puts "Enlace: \"#{dir}\""
-		print "Por favor ingrese el PIN que la pagina de Twitter genero
-			  para completar el proceso de autorizacion: "
+		puts "   "
+		print ("Por favor ingrese el PIN que la pagina de Twitter genero
+para completar el proceso de autorizacion: ")
 		pin = STDIN.readline.chomp
+		puts "   "
 		
 		# Seccion del codigo donde se valida el PIN y los datos 
 		# ingresados por el usuario. Luego de verificar los datos, 
